@@ -46,6 +46,9 @@ function init_tests() {
 
 function get_tests_results($verbose = false) {
 
+    $initialDirectory = getcwd();
+    chdir(dirname(__FILE__));
+
 	init_tests();
 
 	$nav_list = build_list(find_tests());
@@ -105,6 +108,8 @@ function get_tests_results($verbose = false) {
 	        }
 	    }
 	}
+
+    chdir($initialDirectory);
 
 	return array(
 		'success' => $success,
