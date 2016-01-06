@@ -7,7 +7,10 @@ function setup_autoload() {
     set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
     spl_autoload_register(function ($class) {
-        require_once(dirname(__FILE__) . '/../src/' . str_replace("\\", DIRECTORY_SEPARATOR, $class) . '.php');
+        $file = dirname(__FILE__) . '/../src/' . str_replace("\\", DIRECTORY_SEPARATOR, $class) . '.php';
+        if(file_exists($file)) {
+            require_once($file);
+        }
     });
 }
 
