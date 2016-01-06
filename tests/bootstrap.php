@@ -7,24 +7,16 @@ function setup_autoload() {
     set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
     spl_autoload_register(function ($class) {
-<<<<<<< HEAD
         $file = dirname(__FILE__) . '/../src/' . str_replace("\\", DIRECTORY_SEPARATOR, $class) . '.php';
         if(file_exists($file)) {
             require_once($file);
         }
-=======
-        require_once(dirname(__FILE__) . '/../src/' . str_replace("\\", DIRECTORY_SEPARATOR, $class) . '.php');
->>>>>>> 84ed821... Allow using PHPUnit to run tests
     });
 }
 
 function find_tests() {
     // find the tests
-<<<<<<< HEAD
     $path = str_replace('/', DIRECTORY_SEPARATOR, dirname(__FILE__) . '/');
-=======
-    $path = str_replace('/', DIRECTORY_SEPARATOR, dirname(__FILE__).'/');
->>>>>>> 84ed821... Allow using PHPUnit to run tests
     $path = realpath($path);
     return glob($path . DIRECTORY_SEPARATOR . '*.jade');
 }
@@ -55,7 +47,6 @@ function init_tests() {
     setup_autoload();
 }
 
-<<<<<<< HEAD
 function get_generated_html($contents) {
     if(ini_get('allow_url_include') | 0) {
         error_reporting(E_ALL & ~E_NOTICE);
@@ -148,73 +139,4 @@ function get_tests_results($verbose = false) {
         'failures' => $failures,
         'results' => $results
     );
-=======
-function get_tests_results($verbose = false) {
-
-	init_tests();
-
-	$nav_list = build_list(find_tests());
-
-	$success = 0;
-	$failures = 0;
-	$results = [];
-
-	foreach($nav_list as $type => $arr) {
-	    foreach($arr as $e) {
-	        if($e['name'] == 'index' || (isset($argv[1]) && $e['name'] != $argv[1] && $argv[1] != '.'))
-	            continue;
-
-	        $html = @file_get_contents($e['name'] . '.html');
-	        if($html === FALSE) {
-				if($verbose) {
-		            echo "! sample for test '$e[name]' not found.\n";
-				}
-	            continue;
-	        }
-
-			if($verbose) {
-	        	echo "* rendering test '$e[name]'\n";
-			}
-	        try {
-	            $new = show_php($e['name'] . '.jade');
-	        } catch(Exception $err) {
-				if($verbose) {
-	            	echo "! FATAL: php exception: ".str_replace("\n", "\n\t", $err)."\n";
-				}
-	            $new = null;
-	            die;
-	        }
-
-	        if($new !== null) {
-	            file_put_contents($e['name'] . '.jade.php', $new);
-	            $code = `php -d error_reporting="E_ALL & ~E_NOTICE" {$e['name']}.jade.php`;
-	            file_put_contents($e['name'] . '.jade.html', $code);
-
-	            // automatically compare $code and $html here
-	            $from = array("\n", "\r", "\t", " ", '"', "<!DOCTYPEhtml>");
-	            $to = array('', '', '', '', "'", '');
-	            $html = str_replace($from, $to, $html);
-	            $code = str_replace($from, $to, $code);
-				$results[] = array($html, $code);
-	            if(strcmp($html, $code)) {
-	                $failures++;
-					if($verbose) {
-		                echo "  -$html\n";
-		                echo "  +$code\n\n";
-					}
-	                if(isset($argv[1]) && $argv[1] == '.') // render until first difference
-	                    die;
-	            } else {
-	                $success++;
-	            }
-	        }
-	    }
-	}
-
-	return array(
-		'success' => $success,
-		'failures' => $failures,
-		'results' => $results
-	);
->>>>>>> 84ed821... Allow using PHPUnit to run tests
 }
