@@ -1,7 +1,5 @@
 <?php
 
-chdir(dirname(__FILE__));
-
 include 'bootstrap.php';
 
 extract(get_tests_results($verbose = true));
