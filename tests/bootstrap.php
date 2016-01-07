@@ -80,6 +80,8 @@ function get_tests_results($verbose = false) {
     $results = array();
 
     foreach($nav_list as $type => $arr) {
+        var_dump($type, $arr);
+        exit('debug');
         foreach($arr as $e) {
             if($e['name'] == 'index' || (isset($argv[1]) && $e['name'] != $argv[1] && $argv[1] != '.'))
                 continue;
@@ -104,8 +106,6 @@ function get_tests_results($verbose = false) {
                 $new = null;
                 die;
             }
-            var_dump($new);
-            exit('debug');
 
             if($new !== null) {
                 
