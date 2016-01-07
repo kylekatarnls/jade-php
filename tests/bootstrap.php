@@ -55,8 +55,6 @@ function get_generated_html($contents) {
         $contents = ob_get_contents();
         ob_end_clean();
         error_reporting(E_ALL);
-        var_dump($contents);
-        exit('allow_url_include On');
     } else {
         $file = tempnam(sys_get_temp_dir(), 'jade');
         file_put_contents($file, $contents);
@@ -106,6 +104,8 @@ function get_tests_results($verbose = false) {
                 $new = null;
                 die;
             }
+            var_dump($new);
+            exit('debug');
 
             if($new !== null) {
                 
