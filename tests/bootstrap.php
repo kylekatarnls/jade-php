@@ -58,7 +58,7 @@ function get_tests_results($verbose = false) {
 
 	$success = 0;
 	$failures = 0;
-	$results = [];
+	$results = array();
 
 	foreach($nav_list as $type => $arr) {
 	    foreach($arr as $e) {
