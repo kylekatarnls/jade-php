@@ -18,10 +18,6 @@ function find_tests() {
     // find the tests
     $path = str_replace('/', DIRECTORY_SEPARATOR, dirname(__FILE__) . '/');
     $path = realpath($path);
-    $glob = glob($path . DIRECTORY_SEPARATOR . '*.jade');
-    $scan = scandir($path);
-    var_dump($glob, $scan);
-    exit;
     return glob($path . DIRECTORY_SEPARATOR . '*.jade');
 }
 
@@ -37,6 +33,8 @@ function build_list($test_list) {
         $group_list[$parts[0]][] = array('link' => $test, 'name' => $name);
     }
 
+    var_dump($group_list);
+    exit('debug');
     return $group_list;
 }
 
