@@ -1,19 +1,17 @@
 :php
   namespace Test;
-  if(! class_exists('\\Test\\Req', false)) {
-    class Req {
-      public $text;
-      public function __construct($n = '') {
-        $this->text = "test$n\n";
-      }
-      public function suffix($n) {
-        return new Req($n);
-      }
+  class Req {
+    public $text;
+    public function __construct($n = '') {
+      $this->text = "test$n\n";
     }
-    class Test {
-      static public function app() {
-        return new Req();
-      }
+    public function suffix($n) {
+      return new Req($n);
+    }
+  }
+  class Test {
+    static public function app() {
+      return new Req();
     }
   }
 = \Test\Test::app()->text
