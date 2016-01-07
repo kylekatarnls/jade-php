@@ -82,6 +82,7 @@ function get_tests_results($verbose = false) {
     foreach($nav_list as $type => $arr) {
         foreach($arr as $e) {
             if($e['name'] == 'index' || (isset($argv[1]) && $e['name'] != $argv[1] && $argv[1] != '.')) {
+                exit('Exit line: ' . __LINE__);
                 continue;
             }
 
@@ -90,6 +91,7 @@ function get_tests_results($verbose = false) {
                 if($verbose) {
                     echo "! sample for test '$e[name]' not found.\n";
                 }
+                exit('Exit line: ' . __LINE__);
                 continue;
             }
 
@@ -99,15 +101,17 @@ function get_tests_results($verbose = false) {
             try {
                 $new = show_php($e['name'] . '.jade');
             } catch(Exception $err) {
-                throw $err;
+                exit('Exit line: ' . __LINE__);
                 if($verbose) {
                     echo "! FATAL: php exception: ".str_replace("\n", "\n\t", $err)."\n";
                 }
                 $new = null;
             }
+            var_dump($new);
+            exit('Exit line: ' . __LINE__);
 
             if($new !== null) {
-                
+
                 $code = get_generated_html($new);
 
                 // automatically compare $code and $html here
@@ -122,8 +126,11 @@ function get_tests_results($verbose = false) {
                         echo "  -$html\n";
                         echo "  +$code\n\n";
                     }
-                    if(isset($argv[1]) && $argv[1] == '.') // render until first difference
-                        die;
+                    // render until first difference
+                    if(isset($argv[1]) && $argv[1] == '.') {
+                        exit('Exit line: ' . __LINE__);
+                        exit;
+                    }
                 } else {
                     $success++;
                 }
