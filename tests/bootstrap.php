@@ -33,8 +33,6 @@ function build_list($test_list) {
         $group_list[$parts[0]][] = array('link' => $test, 'name' => $name);
     }
 
-    var_dump($group_list);
-    exit('debug');
     return $group_list;
 }
 
@@ -59,11 +57,9 @@ function get_generated_html($contents) {
         error_reporting(E_ALL);
     } else {
         $file = tempnam(sys_get_temp_dir(), 'jade');
-        var_dump($file, file_put_contents($file, $contents));
+        file_put_contents($file, $contents);
         $contents = `php -d error_reporting="E_ALL & ~E_NOTICE" {$file}`;
-        var_dump($contents);
         unlink($file);
-        exit('debug');
     }
     return $contents;
 }
