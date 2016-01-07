@@ -16,8 +16,12 @@ function setup_autoload() {
 
 function find_tests() {
     // find the tests
-    $path = str_replace('/', DIRECTORY_SEPARATOR, dirname(__FILE__).'/');
+    $path = str_replace('/', DIRECTORY_SEPARATOR, dirname(__FILE__) . '/');
     $path = realpath($path);
+    $glob = glob($path . DIRECTORY_SEPARATOR . '*.jade');
+    $scan = scandir($path);
+    var_dump($glob, $scan);
+    exit;
     return glob($path . DIRECTORY_SEPARATOR . '*.jade');
 }
 
