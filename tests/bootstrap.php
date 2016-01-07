@@ -33,8 +33,6 @@ function build_list($test_list) {
         $group_list[$parts[0]][] = array('link' => $test, 'name' => $name);
     }
 
-    var_dump($group_list);
-    exit('debug');
     return $group_list;
 }
 
@@ -49,6 +47,23 @@ function init_tests() {
     setup_autoload();
 }
 
+function get_generated_html($contents) {
+    if(ini_get('allow_url_include') | 0) {
+        error_reporting(E_ALL & ~E_NOTICE);
+        ob_start();
+        include "data://text/plain;base64," . base64_encode($contents);
+        $contents = ob_get_contents();
+        ob_end_clean();
+        error_reporting(E_ALL);
+    } else {
+        $file = tempnam(sys_get_temp_dir(), 'jade');
+        file_put_contents($file, $contents);
+        $contents = `php -d error_reporting="E_ALL & ~E_NOTICE" {$file}`;
+        unlink($file);
+    }
+    return $contents;
+}
+
 function get_tests_results($verbose = false) {
 
     global $argv;
@@ -56,71 +71,70 @@ function get_tests_results($verbose = false) {
     $initialDirectory = getcwd();
     chdir(dirname(__FILE__));
 
-	init_tests();
+    init_tests();
 
-	$nav_list = build_list(find_tests());
+    $nav_list = build_list(find_tests());
 
-	$success = 0;
-	$failures = 0;
-	$results = array();
+    $success = 0;
+    $failures = 0;
+    $results = array();
 
-	foreach($nav_list as $type => $arr) {
-	    foreach($arr as $e) {
-	        if($e['name'] == 'index' || (isset($argv[1]) && $e['name'] != $argv[1] && $argv[1] != '.'))
-	            continue;
+    foreach($nav_list as $type => $arr) {
+        foreach($arr as $e) {
+            if($e['name'] == 'index' || (isset($argv[1]) && $e['name'] != $argv[1] && $argv[1] != '.'))
+                continue;
 
-	        $html = @file_get_contents($e['name'] . '.html');
-	        if($html === FALSE) {
-				if($verbose) {
-		            echo "! sample for test '$e[name]' not found.\n";
-				}
-	            continue;
-	        }
+            $html = @file_get_contents($e['name'] . '.html');
+            if($html === FALSE) {
+                if($verbose) {
+                    echo "! sample for test '$e[name]' not found.\n";
+                }
+                continue;
+            }
 
-			if($verbose) {
-	        	echo "* rendering test '$e[name]'\n";
-			}
-	        try {
-	            $new = show_php($e['name'] . '.jade');
-	        } catch(Exception $err) {
-				if($verbose) {
-	            	echo "! FATAL: php exception: ".str_replace("\n", "\n\t", $err)."\n";
-				}
-	            $new = null;
-	            die;
-	        }
+            if($verbose) {
+                echo "* rendering test '$e[name]'\n";
+            }
+            try {
+                $new = show_php($e['name'] . '.jade');
+            } catch(Exception $err) {
+                if($verbose) {
+                    echo "! FATAL: php exception: ".str_replace("\n", "\n\t", $err)."\n";
+                }
+                $new = null;
+                die;
+            }
 
-	        if($new !== null) {
-	            file_put_contents($e['name'] . '.jade.php', $new);
-	            $code = `php -d error_reporting="E_ALL & ~E_NOTICE" {$e['name']}.jade.php`;
-	            file_put_contents($e['name'] . '.jade.html', $code);
+            if($new !== null) {
+                
+                $code = get_generated_html($new);
 
-	            // automatically compare $code and $html here
-	            $from = array("\n", "\r", "\t", " ", '"', "<!DOCTYPEhtml>");
-	            $to = array('', '', '', '', "'", '');
-	            $html = str_replace($from, $to, $html);
-	            $code = str_replace($from, $to, $code);
-				$results[] = array($html, $code);
-	            if(strcmp($html, $code)) {
-	                $failures++;
-					if($verbose) {
-		                echo "  -$html\n";
-		                echo "  +$code\n\n";
-					}
-	                if(isset($argv[1]) && $argv[1] == '.') // render until first difference
-	                    die;
-	            } else {
-	                $success++;
-	            }
-	        }
-	    }
-	}
+                // automatically compare $code and $html here
+                $from = array("\n", "\r", "\t", " ", '"', "<!DOCTYPEhtml>");
+                $to = array('', '', '', '', "'", '');
+                $html = str_replace($from, $to, $html);
+                $code = str_replace($from, $to, $code);
+                $results[] = array($html, $code);
+                if(strcmp($html, $code)) {
+                    $failures++;
+                    if($verbose) {
+                        echo "  -$html\n";
+                        echo "  +$code\n\n";
+                    }
+                    if(isset($argv[1]) && $argv[1] == '.') // render until first difference
+                        die;
+                } else {
+                    $success++;
+                }
+            }
+        }
+    }
 
     chdir($initialDirectory);
 
-	return array(
-		'success' => $success,
-		'failures' => $failures,
-		'results' => $results
-	);
+    return array(
+        'success' => $success,
+        'failures' => $failures,
+        'results' => $results
+    );
 }
