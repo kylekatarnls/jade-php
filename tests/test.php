@@ -78,7 +78,10 @@ foreach($nav_list as $type => $arr) {
             
             file_put_contents($e['name'] . '.jade.php', $new);
             file_put_contents($e['name'] . '.jade.html', $code);
-            file_put_contents($e['name'] . '.compiled.php', compile_php($e['name']));
+            
+            if (!is_file($e['name'] . '.compiled.php')) {
+                file_put_contents($e['name'] . '.compiled.php', compile_php($e['name']));
+            }
             
             // automatically compare $code and $html here
             $from = array("\n", "\r", "\t", " ", '"', "<!DOCTYPEhtml>");
