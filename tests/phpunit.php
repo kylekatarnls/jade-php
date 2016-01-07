@@ -10,6 +10,8 @@ class JadePHPTest extends PHPUnit_Framework_TestCase {
             $rawResults = get_tests_results();
             $rawResults = $rawResults['results'];
         }
+        var_dump($rawResults);
+        exit('debug');
         return $rawResults;
     }
 
