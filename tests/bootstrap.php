@@ -55,13 +55,15 @@ function get_generated_html($contents) {
         $contents = ob_get_contents();
         ob_end_clean();
         error_reporting(E_ALL);
+        var_dump($contents);
+        exit('allow_url_include On');
     } else {
         $file = tempnam(sys_get_temp_dir(), 'jade');
         var_dump($file, file_put_contents($file, $contents));
         $contents = `php -d error_reporting="E_ALL & ~E_NOTICE" {$file}`;
         var_dump($contents);
         unlink($file);
-        exit('debug');
+        exit('allow_url_include Off');
     }
     return $contents;
 }
