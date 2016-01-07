@@ -57,9 +57,11 @@ function get_generated_html($contents) {
         error_reporting(E_ALL);
     } else {
         $file = tempnam(sys_get_temp_dir(), 'jade');
-        file_put_contents($file, $contents);
+        var_dump($file, file_put_contents($file, $contents));
         $contents = `php -d error_reporting="E_ALL & ~E_NOTICE" {$file}`;
+        var_dump($contents);
         unlink($file);
+        exit('debug');
     }
     return $contents;
 }
