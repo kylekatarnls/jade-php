@@ -49,6 +49,8 @@ function init_tests() {
 
 function get_tests_results($verbose = false) {
 
+    global $argv;
+
     $initialDirectory = getcwd();
     chdir(dirname(__FILE__));
 
