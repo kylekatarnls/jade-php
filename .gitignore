@@ -5,3 +5,6 @@
 # Composer
 /vendor
 /composer.lock
+
+# Tests
+/tests/*.compiled.php
