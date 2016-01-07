@@ -81,8 +81,12 @@ function get_tests_results($verbose = false) {
 
     foreach($nav_list as $type => $arr) {
         foreach($arr as $e) {
-            if($e['name'] == 'index' || (isset($argv[1]) && $e['name'] != $argv[1] && $argv[1] != '.')) {
-                exit('Exit line: ' . __LINE__);
+            if($e['name'] == 'index' || (
+                isset($argv[1]) &&
+                false === stripos($argv[0], 'phpunit') &&
+                $e['name'] != $argv[1] &&
+                $argv[1] != '.'
+            )) {
                 continue;
             }
 
@@ -91,7 +95,6 @@ function get_tests_results($verbose = false) {
                 if($verbose) {
                     echo "! sample for test '$e[name]' not found.\n";
                 }
-                exit('Exit line: ' . __LINE__);
                 continue;
             }
 
@@ -101,14 +104,11 @@ function get_tests_results($verbose = false) {
             try {
                 $new = show_php($e['name'] . '.jade');
             } catch(Exception $err) {
-                exit('Exit line: ' . __LINE__);
                 if($verbose) {
                     echo "! FATAL: php exception: ".str_replace("\n", "\n\t", $err)."\n";
                 }
                 $new = null;
             }
-            var_dump($new);
-            exit('Exit line: ' . __LINE__);
 
             if($new !== null) {
 
