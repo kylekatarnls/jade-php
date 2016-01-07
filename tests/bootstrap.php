@@ -80,11 +80,10 @@ function get_tests_results($verbose = false) {
     $results = array();
 
     foreach($nav_list as $type => $arr) {
-        var_dump($type, $arr);
-        exit('debug');
         foreach($arr as $e) {
-            if($e['name'] == 'index' || (isset($argv[1]) && $e['name'] != $argv[1] && $argv[1] != '.'))
+            if($e['name'] == 'index' || (isset($argv[1]) && $e['name'] != $argv[1] && $argv[1] != '.')) {
                 continue;
+            }
 
             $html = @file_get_contents($e['name'] . '.html');
             if($html === FALSE) {
@@ -100,11 +99,11 @@ function get_tests_results($verbose = false) {
             try {
                 $new = show_php($e['name'] . '.jade');
             } catch(Exception $err) {
+                throw $err;
                 if($verbose) {
                     echo "! FATAL: php exception: ".str_replace("\n", "\n\t", $err)."\n";
                 }
                 $new = null;
-                die;
             }
 
             if($new !== null) {
