@@ -39,6 +39,11 @@ function show_php($file) {
     return $jade->render($file);
 }
 
+function compile_php($file) {
+    $jade = new Jade\Jade();
+    return $jade->compile(file_get_contents($file . '.jade'));
+}
+
 mb_internal_encoding('utf-8');
 error_reporting(E_ALL);
 setup_autoload();
@@ -69,10 +74,15 @@ foreach($nav_list as $type => $arr) {
         }
 
         if($new !== null) {
-            file_put_contents($e['name'] . '.jade.php', $new);
             $code = `php -d error_reporting="E_ALL & ~E_NOTICE" {$e['name']}.jade.php`;
+            
+            file_put_contents($e['name'] . '.jade.php', $new);
             file_put_contents($e['name'] . '.jade.html', $code);
-
+            
+            if (!is_file($e['name'] . '.compiled.php')) {
+                file_put_contents($e['name'] . '.compiled.php', compile_php($e['name']));
+            }
+            
             // automatically compare $code and $html here
             $from = array("\n", "\r", "\t", " ", '"', "<!DOCTYPEhtml>");
             $to = array('', '', '', '', "'", '');

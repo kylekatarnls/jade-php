@@ -1,2 +1,3 @@
 *.jade.html
 *.jade.php
+*.compiled.php
