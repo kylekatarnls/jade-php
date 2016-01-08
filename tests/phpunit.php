@@ -15,7 +15,7 @@ class JadePHPTest extends PHPUnit_Framework_TestCase {
     );
 
     public function caseProvider() {
-        $array = [];
+        $array = array();
         
         foreach (build_list(find_tests()) as $arr) {
             foreach ($arr as $e) {
@@ -23,7 +23,7 @@ class JadePHPTest extends PHPUnit_Framework_TestCase {
                     continue;
                 }
                 
-                $array[] = [$e['name']];
+                $array[] = array($e['name']);
             }
         }
         
@@ -34,7 +34,8 @@ class JadePHPTest extends PHPUnit_Framework_TestCase {
      * @dataProvider caseProvider
      */
     public function testJadeGeneration($name) {
-        $result = get_test_result($name)[1];
+        $result = get_test_result($name);
+        $result = $result[1];
                 
         $this->assertSame($result[1], $result[2], $name);
     }

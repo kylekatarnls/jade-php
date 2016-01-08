@@ -96,10 +96,10 @@ function get_test_result ($name, $verbose = false) {
                 echo "  +$code\n\n";
             }
             
-            return [false, $result];
+            return array(false, $result);
         }
         
-        return [true, $result];
+        return array(true, $result);
     }
 }
 
