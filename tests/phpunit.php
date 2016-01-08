@@ -19,11 +19,13 @@ class JadePHPTest extends PHPUnit_Framework_TestCase {
         
         foreach (build_list(find_tests()) as $arr) {
             foreach ($arr as $e) {
-                if ($e['name'] === 'index') {
+                $name = $e['name'];
+                
+                if ($name === 'index' || in_array($name, self::$skipped)) {
                     continue;
                 }
                 
-                $array[] = array($e['name']);
+                $array[] = array($name);
             }
         }
         
