@@ -3,7 +3,6 @@
 require dirname(__FILE__) . '/../vendor/autoload.php';
 
 class JadePHPTest extends PHPUnit_Framework_TestCase {
-
     static private $skipped = array(
         // Here is the remain to implement list
         'inheritance.extend.mixins',
@@ -15,20 +14,30 @@ class JadePHPTest extends PHPUnit_Framework_TestCase {
     );
 
     public function caseProvider() {
-        static $rawResults = null;
-        if(is_null($rawResults)) {
-            $rawResults = get_tests_results();
-            $rawResults = $rawResults['results'];
+        $array = array();
+        
+        foreach (build_list(find_tests()) as $arr) {
+            foreach ($arr as $e) {
+                $name = $e['name'];
+                
+                if ($name === 'index' || in_array($name, self::$skipped)) {
+                    continue;
+                }
+                
+                $array[] = array($name);
+            }
         }
-        return $rawResults;
+        
+        return $array;
     }
-
+    
     /**
      * @dataProvider caseProvider
      */
-    public function testStringGeneration($name, $input, $expected) {
-        if(! in_array($name, static::$skipped)) {
-            $this->assertSame($input, $expected, $name);
-        }
+    public function testJadeGeneration($name) {
+        $result = get_test_result($name);
+        $result = $result[1];
+                
+        $this->assertSame($result[1], $result[2], $name);
     }
 }
