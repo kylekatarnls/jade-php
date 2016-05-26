@@ -174,11 +174,6 @@ abstract class AttributesCompiler extends CompilerFacade
         }
 
         $items .= $this->getClassesCode($classes, $classesCheck);
-        $items = trim($items);
-
-        if (empty($items)) {
-            return;
-        }
 
         $this->buffer(' ' . trim($items), false);
     }
