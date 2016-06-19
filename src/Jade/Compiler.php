@@ -276,11 +276,9 @@ class Compiler extends MixinVisitor
      */
     public function interpolate($text)
     {
-        $compiler = $this;
-
-        return preg_replace_callback('/(\\\\)?([#!]){(.*?)}/', function ($match) use ($compiler) {
+        return preg_replace_callback('/(\\\\)?([#!]){(.*?)}/', function ($match) {
             if ($match[1] === '') {
-                return $compiler->createCode($match[2] === '!' ? static::UNESCAPED : static::ESCAPED, $match[3]);
+                return $this->createCode($match[2] === '!' ? static::UNESCAPED : static::ESCAPED, $match[3]);
             }
 
             return substr($match[0], 1);
