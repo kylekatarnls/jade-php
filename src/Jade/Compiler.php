@@ -270,19 +270,27 @@ class Compiler extends MixinVisitor
     }
 
     /**
-     * @param $text
+     * @param string $text
      *
      * @return mixed
      */
     public function interpolate($text)
     {
-        return preg_replace_callback('/(\\\\)?([#!]){(.*?)}/', function ($match) {
-            if ($match[1] === '') {
-                return $this->createCode($match[2] === '!' ? static::UNESCAPED : static::ESCAPED, $match[3]);
-            }
+        return preg_replace_callback('/(\\\\)?([#!]){(.*?)}/', array($this, 'interpolateFromCapture'), $text);
+    }
 
-            return substr($match[0], 1);
-        }, $text);
+    /**
+     * @param array $match
+     *
+     * @return string
+     */
+    protected function interpolateFromCapture($match)
+    {
+        if ($match[1] === '') {
+            return $this->createCode($match[2] === '!' ? static::UNESCAPED : static::ESCAPED, $match[3]);
+        }
+
+        return substr($match[0], 1);
     }
 
     /**
