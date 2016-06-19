@@ -282,7 +282,7 @@ class CodeHandler extends CompilerUtils
                                         break;
                                     }
                                     if (!is_null($value)) {
-                                        throw new \Exception("Parse error on " . substr($argument, strlen($match[1])), 1);
+                                        throw new \Exception('Parse error on ' . substr($argument, strlen($match[1])), 1);
                                     }
                                     $key .= $match[1];
                                     $value = '';
