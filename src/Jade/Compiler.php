@@ -276,22 +276,15 @@ class Compiler extends MixinVisitor
      */
     public function interpolate($text)
     {
-        $count = preg_match_all('/(\\\\)?([#!]){(.*?)}/', $text, $matches, PREG_SET_ORDER);
+        $compiler = $this;
 
-        if (!$count) {
-            return $text;
-        }
-
-        foreach ($matches as $match) {
-
-            // \#{dont_do_interpolation}
-            if (mb_strlen($match[1]) == 0) {
-                $code = $this->createCode($match[2] == '!' ? static::UNESCAPED : static::ESCAPED, $match[3]);
-                $text = str_replace($match[0], $code, $text);
+        return preg_replace_callback('/(\\\\)?([#!]){(.*?)}/', function ($match) use ($compiler) {
+            if ($match[1] === '') {
+                return $compiler->createCode($match[2] === '!' ? static::UNESCAPED : static::ESCAPED, $match[3]);
             }
-        }
 
-        return str_replace('\\#{', '#{', $text);
+            return substr($match[0], 1);
+        }, $text);
     }
 
     /**
@@ -324,7 +317,7 @@ class Compiler extends MixinVisitor
             }
 
             // if we have a php variable assume that the string is good php
-            if (preg_match('/&?\${1,2}' . static::VARNAME . '|::/', $arg)) {
+            if (strpos('{[', substr($arg, 0, 1)) === false && preg_match('/&?\${1,2}' . static::VARNAME . '|[A-Za-z0-9_\\\\]+::/', $arg)) {
                 array_push($variables, $arg);
                 continue;
             }
