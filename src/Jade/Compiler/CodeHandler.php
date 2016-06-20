@@ -229,6 +229,7 @@ class CodeHandler extends CompilerUtils
                 case '[':
                 case '{':
                     $input = $handleCodeInbetween();
+
                     $output = array();
                     $key = '';
                     $value = null;
@@ -261,6 +262,7 @@ class CodeHandler extends CompilerUtils
                                 case "'":
                                     if ($quote) {
                                         if ($quote !== $match[2] && (strlen($match[1]) - strlen(rtrim($match[1], '\\'))) & 1) {
+                                            exit('antislash');
                                             ${is_null($value) ? 'key' : 'value'} .= $match[0];
                                             $consume($argument, $match[0]);
                                             break;
