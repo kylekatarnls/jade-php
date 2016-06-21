@@ -31,13 +31,14 @@ class CommonUtils
     }
 
     /**
-     * Return true if the ending quote of the string is escaped
+     * Return true if the ending quote of the string is escaped.
      *
      * @param string $quotedString
      *
-     * @return boolean
+     * @return bool
      */
-    public static function escapedEnd($quotedString) {
+    public static function escapedEnd($quotedString)
+    {
         $end = substr($quotedString, strlen(rtrim($quotedString, '\\')));
 
         return substr($end, 0, 1) === '\\' && strlen($end) & 1;
