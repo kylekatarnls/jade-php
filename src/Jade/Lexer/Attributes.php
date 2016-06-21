@@ -49,6 +49,7 @@ class Attributes
                     array('/^[\'\"]|[\'\"]$/', '/\!/'), '', $key
                 );
                 $this->token->escaped[$key] = $escapedAttribute;
+
                 $this->token->attributes[$key] = ('' === $val) ? true : $interpolate($val);
 
                 $key = '';
@@ -160,14 +161,16 @@ class Attributes
                     $val .= $char;
                     break;
 
-                case '"':
-                case "'":
-                    $stringParser = new StringAttribute($state, $char);
-                    $stringParser->parse($states, $val, $quote);
-                    break;
-
                 case '':
                     break;
+
+                case '"':
+                case "'":
+                    if (!CommonUtils::escapedEnd($val)) {
+                        $stringParser = new StringAttribute($state, $char);
+                        $stringParser->parse($states, $val, $quote);
+                        break;
+                    }
 
                 default:
                     switch ($state()) {

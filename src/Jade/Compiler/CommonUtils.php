@@ -29,4 +29,17 @@ class CommonUtils
 
         return $call;
     }
+
+    /**
+     * Return true if the ending quote of the string is escaped
+     *
+     * @param string $quotedString
+     *
+     * @return boolean
+     */
+    public static function escapedEnd($quotedString) {
+        $end = substr($quotedString, strlen(rtrim($quotedString, '\\')));
+
+        return substr($end, 0, 1) === '\\' && strlen($end) & 1;
+    }
 }

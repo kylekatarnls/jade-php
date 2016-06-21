@@ -261,8 +261,7 @@ class CodeHandler extends CompilerUtils
                                 case '"':
                                 case "'":
                                     if ($quote) {
-                                        if ($quote !== $match[2] && (strlen($match[1]) - strlen(rtrim($match[1], '\\'))) & 1) {
-                                            exit('antislash');
+                                        if (CommonUtils::escapedEnd($match[1])) {
                                             ${is_null($value) ? 'key' : 'value'} .= $match[0];
                                             $consume($argument, $match[0]);
                                             break;
